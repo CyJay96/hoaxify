@@ -1,1 +1,3 @@
 rootProject.name = 'hoaxify'
+
+includeBuild 'product-service'

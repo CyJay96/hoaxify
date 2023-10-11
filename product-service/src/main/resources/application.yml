@@ -4,4 +4,4 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/product-service
+      uri: mongodb://localhost:27017/hoaxify_product

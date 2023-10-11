@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 003v0.0.1
+      author: github.com/CyJay96
+      comment: Create ORDERS_ORDER_LINE_ITEMS table
+      changes:
+        - createTable:
+            tableName: orders_order_line_items
+            columns:
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: order_line_items_id
+                  type: bigint
+                  constraints:
+                    unique: true
+                    nullable: false

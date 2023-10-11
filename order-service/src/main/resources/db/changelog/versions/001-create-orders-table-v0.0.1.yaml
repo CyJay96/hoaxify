@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 001v0.0.1
+      author: github.com/CyJay96
+      comment: Create ORDERS table
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: number
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

@@ -2,3 +2,4 @@ rootProject.name = 'hoaxify'
 
 includeBuild 'product-service'
 includeBuild 'order-service'
+includeBuild 'inventory-service'

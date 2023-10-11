@@ -34,7 +34,8 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<APIResponse<ProductResponse>> save(
-            @RequestBody @Valid ProductRequest productRequest) {
+            @RequestBody @Valid ProductRequest productRequest
+    ) {
         ProductResponse product = productService.save(productRequest);
 
         return APIResponse.of(
@@ -73,7 +74,8 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<ProductResponse>> update(
             @PathVariable @NotBlank String id,
-            @RequestBody @Valid ProductRequest productRequest) {
+            @RequestBody @Valid ProductRequest productRequest
+    ) {
         ProductResponse product = productService.update(id, productRequest);
 
         return APIResponse.of(
@@ -87,7 +89,8 @@ public class ProductController {
     @PatchMapping("/{id}")
     public ResponseEntity<APIResponse<ProductResponse>> updatePartially(
             @PathVariable @NotBlank String id,
-            @RequestBody ProductRequest productRequest) {
+            @RequestBody ProductRequest productRequest
+    ) {
         ProductResponse product = productService.update(id, productRequest);
 
         return APIResponse.of(

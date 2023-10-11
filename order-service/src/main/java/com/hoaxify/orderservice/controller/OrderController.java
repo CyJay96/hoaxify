@@ -6,7 +6,8 @@ import com.hoaxify.orderservice.model.dto.response.OrderResponse;
 import com.hoaxify.orderservice.model.dto.response.PageResponse;
 import com.hoaxify.orderservice.service.OrderService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -56,7 +57,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<OrderResponse>> findById(@PathVariable @NotBlank Long id) {
+    public ResponseEntity<APIResponse<OrderResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
         OrderResponse order = orderService.findById(id);
 
         return APIResponse.of(
@@ -68,7 +69,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteById(@PathVariable @NotBlank Long id) {
+    public ResponseEntity<APIResponse<Void>> deleteById(@PathVariable @NotNull @PositiveOrZero Long id) {
         orderService.deleteById(id);
 
         return APIResponse.of(

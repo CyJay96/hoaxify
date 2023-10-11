@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 004v0.0.1-1
+      author: github.com/CyJay96
+      comment: Add FK for ORDER_LINE_ITEMS table
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: order_id
+            baseTableName: orders_order_line_items
+            constraintName: fk__orders_order_line_items__orders
+            deferrable: false
+            initiallyDeferred: false
+            referencedColumnNames: id
+            referencedTableName: orders
+
+        - addForeignKeyConstraint:
+              baseColumnNames: order_line_items_id
+              baseTableName: orders_order_line_items
+              constraintName: fk__orders_order_line_items__order_line_items
+              deferrable: false
+              initiallyDeferred: false
+              referencedColumnNames: id
+              referencedTableName: order_line_items

@@ -3,16 +3,20 @@ package com.hoaxify.orderservice.service.impl;
 import com.hoaxify.orderservice.exception.EntityNotFoundException;
 import com.hoaxify.orderservice.mapper.OrderMapper;
 import com.hoaxify.orderservice.model.dto.request.OrderRequest;
+import com.hoaxify.orderservice.model.dto.response.InventoryResponse;
 import com.hoaxify.orderservice.model.dto.response.OrderResponse;
 import com.hoaxify.orderservice.model.dto.response.PageResponse;
 import com.hoaxify.orderservice.model.entity.Order;
+import com.hoaxify.orderservice.model.entity.OrderLineItems;
 import com.hoaxify.orderservice.repository.OrderRepository;
 import com.hoaxify.orderservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
@@ -23,11 +27,35 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final WebClient webClient;
 
     @Override
     public OrderResponse save(OrderRequest orderRequest) {
-        Order order = orderRepository.save(orderMapper.toOrder(orderRequest));
-        return orderMapper.toOrderResponse(order);
+        Order order = orderMapper.toOrder(orderRequest);
+
+        List<String> orderSkuCodes = order.getOrderLineItems().stream()
+                .map(OrderLineItems::getSkuCode)
+                .toList();
+
+        List<InventoryResponse> inventoryResponses = webClient.get()
+                .uri("http://localhost:8083/api/v0/inventories/bySkuCodes",
+                        uriBuilder -> uriBuilder.queryParam("skuCode", orderSkuCodes)
+                                .build())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<InventoryResponse>>() {
+                })
+                .block();
+
+        boolean isAllProductsInStock = inventoryResponses.stream()
+                .allMatch(InventoryResponse::getIsInStock);
+
+        if (Boolean.FALSE.equals(isAllProductsInStock)) {
+            throw new EntityNotFoundException("Product is not in stock, please try again later");
+        }
+
+        Order savedOrder = orderRepository.save(order);
+
+        return orderMapper.toOrderResponse(savedOrder);
     }
 
     @Override

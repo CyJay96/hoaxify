@@ -6,7 +6,6 @@ import com.hoaxify.inventoryservice.model.dto.response.InventoryResponse;
 import com.hoaxify.inventoryservice.model.dto.response.PageResponse;
 import com.hoaxify.inventoryservice.service.InventoryService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(InventoryController.INVENTORY_API_PATH)
@@ -59,7 +61,7 @@ public class InventoryController {
         );
     }
 
-    @GetMapping("byId/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<APIResponse<InventoryResponse>> findById(@PathVariable @NotNull @PositiveOrZero Long id) {
         InventoryResponse inventory = inventoryService.findById(id);
 
@@ -71,16 +73,9 @@ public class InventoryController {
         );
     }
 
-    @GetMapping("bySkuCode/{skuCode}")
-    public ResponseEntity<APIResponse<Boolean>> existsBySkuCode(@PathVariable @NotBlank String skuCode) {
-        Boolean isExistsBySkuCode = inventoryService.existsBySkuCode(skuCode);
-
-        return APIResponse.of(
-                "Inventory with skuCode: " + skuCode + " was found",
-                INVENTORY_API_PATH + "/" + skuCode,
-                HttpStatus.OK,
-                isExistsBySkuCode
-        );
+    @GetMapping("/bySkuCodes")
+    public List<InventoryResponse> findBySkuCodes(@RequestParam @NotNull List<String> skuCode) {
+        return inventoryService.findBySkuCodes(skuCode);
     }
 
     @PutMapping("/{id}")

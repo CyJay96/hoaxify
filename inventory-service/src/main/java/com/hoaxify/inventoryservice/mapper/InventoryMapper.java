@@ -16,6 +16,7 @@ public interface InventoryMapper {
     @Mapping(target = "id", ignore = true)
     Inventory toInventory(InventoryRequest inventoryRequest);
 
+    @Mapping(target = "isInStock", expression = "java(inventory.getQuantity() > 0)")
     InventoryResponse toInventoryResponse(Inventory inventory);
 
     @BeanMapping(

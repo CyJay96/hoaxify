@@ -54,9 +54,10 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Boolean existsBySkuCode(String skuCode) {
-        return inventoryRepository.existsBySkuCode(skuCode);
+    public List<InventoryResponse> findBySkuCodes(List<String> skuCodes) {
+        return inventoryRepository.findBySkuCodeIn(skuCodes).stream()
+                .map(inventoryMapper::toInventoryResponse)
+                .toList();
     }
 
     @Override

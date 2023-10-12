@@ -1,4 +1,4 @@
-package com.hoaxify.inventoryservice.model.dto.response;
+package com.hoaxify.orderservice.model.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

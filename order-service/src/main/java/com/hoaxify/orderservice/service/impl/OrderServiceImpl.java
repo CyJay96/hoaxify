@@ -27,7 +27,10 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
+
+    private static final String SKU_CODE_FIELD = "skuCode";
+    private static final String INVENTORY_SERVICE_SKU_CODE_URI = "http://inventory-service/api/v0/inventories/bySkuCodes";
 
     @Override
     public OrderResponse save(OrderRequest orderRequest) {
@@ -37,9 +40,9 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderLineItems::getSkuCode)
                 .toList();
 
-        List<InventoryResponse> inventoryResponses = webClient.get()
-                .uri("http://localhost:8083/api/v0/inventories/bySkuCodes",
-                        uriBuilder -> uriBuilder.queryParam("skuCode", orderSkuCodes)
+        List<InventoryResponse> inventoryResponses = webClientBuilder.build().get()
+                .uri(INVENTORY_SERVICE_SKU_CODE_URI,
+                        uriBuilder -> uriBuilder.queryParam(SKU_CODE_FIELD, orderSkuCodes)
                                 .build())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<InventoryResponse>>() {
